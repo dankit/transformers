@@ -1,4 +1,4 @@
-This is my personal implementation of the paper “Attention Is All You Need.” All credit goes to the original authors.
+This is my personal implementation of the paper [Attention is all you need](https://arxiv.org/pdf/1706.03762). All credit goes to the original authors.
 
 This project was meant to give me an intuitive understanding of transformers and PyTorch by applying the theory in practice.
 
