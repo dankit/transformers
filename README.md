@@ -19,3 +19,7 @@ To my knowledge, modern transformers differ in several ways:
 -Mixture-of-experts architectures are increasingly used.
 
 These are all ideas I hope to explore in a future iteration of my transformer. Feel free to reach out with any comments or bug fixes.
+
+
+update 1/1/2026:
+I've added swiglu, rmsnorm, rotary positional embeddings.
