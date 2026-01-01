@@ -22,7 +22,7 @@ class EncoderOnlyTransformer(nn.Module):
         x = self.positional_encodings(x)
         for layer in self.layers:
             x = layer(x, padding_mask)
-        return x #batch x seq x dim (each output is a collection of embeddings for each token at this point) 
+        return x #(batch, seq, dim) (each output is a collection of embeddings for each token at this point) 
 
 class DecoderOnlyTransformer(nn.Module):
     def __init__(self, vocab_size, d_model, num_heads, num_layers, max_seq_len, p_dropout, d_type, device):
@@ -38,8 +38,8 @@ class DecoderOnlyTransformer(nn.Module):
         x = self.embeddings(x) * math.sqrt(self.d_model)
         x = self.positional_encodings(x)
         for layer in self.layers:
-            x = layer(x, padding_mask) #batch size x seq len x dim
-        #seq len x dim x dim x vocab_size = seq len x vocab size
+            x = layer(x, padding_mask) #(batch, seq, dim)
+        #(seq, dim) x (dim, vocab_size) = (seq, vocab_size)
         logits = x @ self.embeddings.weight.T
         return logits
 
@@ -60,13 +60,13 @@ class EncoderDecoderTransformer(nn.Module):
         src_seq = self.embeddings(src_seq) * scale_factor
         src_seq = self.positional_encodings(src_seq)
         for layer in self.encoder_layers:
-            src_seq = layer(src_seq, src_padding_mask) #batch size x seq len x dim
+            src_seq = layer(src_seq, src_padding_mask) #(batch, seq, dim)
 
         trg_seq = self.embeddings(trg_seq) * scale_factor
         trg_seq = self.positional_encodings(trg_seq)
         for layer in self.decoder_layers:
             trg_seq = layer(trg_seq, trg_padding_mask, src_seq, src_padding_mask)
-        #[seq len x dim] x [dim x vocab_size] = seq len x vocab size -> distribution of probabilities (softmaxed)
+        #(seq, dim) x (dim, vocab_size) = (seq, vocab_size) -> distribution of probabilities (softmaxed)
         #i think doing inner product here is like doing similarity with embeddings, higher score = closer in meaning
         logits = trg_seq @ self.embeddings.weight.T
         return logits
